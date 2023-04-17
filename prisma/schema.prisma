@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model group {
+  id            Int     @id @default(autoincrement())
+  name          String  @db.VarChar(45)
+  profileImage  String? @db.VarChar(255) @map("profile_image")
+  ruleset       Json?
+  list          list[]
+}
+
+model list {
+  id         Int          @id @default(autoincrement())
+  name       String       @db.VarChar(45)
+  ownerId    Int          @map("owner_id")
+  groupId    Int?         @map("group_id")
+  group      group?       @relation(fields: [groupId], references: [id])
+  user       user         @relation(fields: [ownerId], references: [id])
+  movieList  movieList[]
+
+  @@unique([name, ownerId], map: "name_owner_uq")
+  @@index([groupId], map: "list_group_id_fkey")
+  @@index([ownerId], map: "list_owner_id_fkey")
+}
+
+model movieList {
+  listId   Int                @map("list_id")
+  movieId  Int                @map("movie_id")
+  status   movieListStatus?   @default(UNREAD)
+  list     list               @relation(fields: [listId], references: [id])
+  movie    movie              @relation(fields: [movieId], references: [id])
+
+  @@id([listId, movieId])
+  @@index([movieId], map: "movie_list_movie_id_fkey")
+  @@map("movie_list")
+}
+
+model movie {
+  id              Int          @id @default(autoincrement())
+  title           String       @db.VarChar(255)
+  year            Int
+  imdbUrl         String?      @db.VarChar(255) @map("imdb_url")
+  runtime         String?      @db.VarChar(45)
+  director        String?      @db.VarChar(45)
+  additionalNote  String?      @db.VarChar(255) @map("additional_note")
+  language        String?      @db.VarChar(3)
+  movieList       movieList[]
+
+  @@unique([title, year], map: "title_year_uq")
+}
+
+model user {
+  id            Int     @id @default(autoincrement())
+  name          String  @unique @db.VarChar(45)
+  profileImage  String? @db.VarChar(255) @map("profile_image")
+  list          list[]
+}
+
+enum movieListStatus {
+  UNREAD
+  SEARCHING
+  FOUND_NO_SUB
+  FOUND_SUB
+  CANT_FIND
+  WATCHED
+
+  @@map("movie_list_status")
+}
