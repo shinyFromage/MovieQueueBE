@@ -27,5 +27,6 @@ npx prisma migrate dev --name init
 ### server
 running the server should be a simple 
 ```
-npm run
+npm start
 ```
+apollo provides a nice default sandbox to test out the api on http://localhost:4000 when the server is running
