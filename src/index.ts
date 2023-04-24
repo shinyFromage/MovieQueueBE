@@ -40,6 +40,7 @@ const typeDefs = `#graphql
         group: Group
         user: User!
         movieList: [MovieList]!
+        movies: [Movie]
     }
 
     type MovieList {
@@ -197,9 +198,23 @@ const resolvers = {
         group: async (parent) => {
             return await prisma.group.findUnique({ where: { id: parent.groupId } });
         },
-        movieList: async (parent) => {
-            return await prisma.movieList.findMany({ where: { listId: parent.id } });
+        movieList:async (parent) => {
+            return await prisma.list.findUnique({ where: {id: parent.id }}).movieList()
         },
+        movies: async (parent) => {
+            // a possibly more direct approach to getting the movies in a list
+            // but you do lose the status info
+            // a possible todo would be to modify the movie type to fetch this info
+            const movieList = await prisma.movieList.findMany({ 
+                where: { listId: parent.id }
+            })
+            const movieIds = movieList.map((x) => x.movieId)
+            return await prisma.movie.findMany({
+                where: {
+                    id: { in: movieIds }
+                }
+            })
+        }
     },
   
     MovieList: {
