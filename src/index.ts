@@ -85,19 +85,19 @@ const typeDefs = `#graphql
 
     type Mutation {
         createGroup(name: String!, profileImage: String, ruleset: JSON): Group!
-        updateGroup(id: Int!, name: String!, profileImage: String, ruleset: JSON): Group!
+        updateGroup(id: Int!, name: String, profileImage: String, ruleset: JSON): Group!
         deleteGroup(id: Int!): Group
         createList(name: String!, ownerId: Int!, groupId: Int): List!
-        updateList(id: Int!, name: String!, owner_id: Int!, group_id: Int): List!
+        updateList(id: Int!, name: String, ownerId: Int, groupId: Int): List!
         deleteList(id: Int!): List
         addMovieToList(listId: Int!, movieId: Int!, status: MovieListStatus!): MovieList!
         updateMovieStatus(listId: Int!, movieId: Int!, status: MovieListStatus!): MovieList!
         removeMovieFromList(listId: Int!, movieId: Int!): MovieList!
         createMovie(title: String!, year: Int!, imdbUrl: String, runtime: String, director: String, additionalNote: String, language: String): Movie!
-        updateMovie(id: Int!, title: String!, year: Int!, imdbUrl: String, runtime: String, director: String, additionalNote: String, language: String): Movie!
+        updateMovie(id: Int!, title: String, year: Int, imdbUrl: String, runtime: String, director: String, additionalNote: String, language: String): Movie!
         deleteMovie(id: Int!): Movie
         createUser(name: String!, profileImage: String): User!
-        updateUser(id: Int!, name: String!, profileImage: String): User!
+        updateUser(id: Int!, name: String, profileImage: String): User!
         deleteUser(id: Int!): User
     }
 `;
